@@ -8,8 +8,6 @@ from resources.item import Item, ItemList
 from resources.store import Store, StoreList
 from datetime import timedelta
 
-from db import db
-
 app = Flask(__name__)
 # this key would need to be long, random, and not exposed to users
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
@@ -18,10 +16,6 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = 'otter'
 api = Api(app)
 
-
-@app.before_first_request
-def create_tables():
-    db.create_all()
 
 # customize JWT auth response, include user_id in response body
 jwt = JWT(app, authenticate, identity_function) #/auth
@@ -35,5 +29,4 @@ api.add_resource(UserRegister, '/register')
 
 # prevent auto-execution of app upon import
 if __name__ == '__main__':
-    db.init_app(app)
     app.run(port=5000, debug=True)
